@@ -16,8 +16,7 @@ function Sidebar({ isOpen }) {
         </Link>
 
         <Link to="/check" className="sidebar-item">
-          <FaWater />
-          {isOpen && <span>Water Quality</span>}
+          <FaWater /> <span className="nowrap">Water Quality</span>
         </Link>
 
         <div className="sidebar-item">

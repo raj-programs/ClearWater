@@ -182,3 +182,22 @@
     border-right-color: var(--border);
   }
 }
+.project-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 45px;
+  object-fit: contain;
+  pointer-events: none;
+}
+.main-logo {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  height: 65px;
+
+  z-index: 1000;
+  pointer-events: none;
+}
