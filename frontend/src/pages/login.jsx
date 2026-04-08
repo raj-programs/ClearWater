@@ -8,20 +8,12 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-
-    if (email === "admin@gmail.com" && password === "1234") {
-      navigate("/home");
-    } else {
-      alert("Invalid credentials");
-    }
-  };
+ 
 
   return (
     <div className="login-container">
 
-      <form onSubmit={handleLogin} className="login-form">
+      <form className="login-form">
         <h2 className="login-title">JalRakshak Login</h2>
 
         <input
@@ -40,7 +32,7 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button type="submit" className="login-button">
+        <button type="submit" className="login-button" onClick={() => navigate("/")}>
           Login
         </button>
       </form>

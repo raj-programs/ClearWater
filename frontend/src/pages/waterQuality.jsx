@@ -1,31 +1,57 @@
+import { useState } from "react";
+import MapView from "../components/mapview";
+import ResultCard from "../components/ResultCard";
+
 function WaterQuality() {
+  const [display, showDisplay] = useState(false);
+
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-6 h-screen p-6 bg-gradient-to-br from-blue-50 via-white to-blue-100">
 
       {/* Map Area */}
-      <div className="flex-1 bg-white rounded-xl shadow h-[500px] flex items-center justify-center">
-        🌍 Map goes here
+      <div className="flex-1 h-full rounded-2xl overflow-hidden shadow-xl border border-gray-200">
+        <MapView />
       </div>
 
-      {/* Control Panel */}
-      <div className="w-80 bg-white rounded-xl shadow p-4">
-        <h2 className="font-semibold mb-4">Check Water Quality</h2>
+      {/* Right Panel */}
+      <div className="flex flex-col gap-4 w-96">
 
-        <select className="w-full mb-3 p-2 border rounded">
-          <option>State</option>
-        </select>
+        {/* Control Panel */}
+        <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg p-6 transition hover:shadow-2xl">
 
-        <select className="w-full mb-3 p-2 border rounded">
-          <option>District</option>
-        </select>
+          <h2 className="text-xl font-semibold mb-5 text-gray-800 tracking-wide">
+            Check Water Quality
+          </h2>
 
-        <select className="w-full mb-3 p-2 border rounded">
-          <option>Usage</option>
-        </select>
+          {/* Dropdowns */}
+          <select className="w-full mb-3 p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 outline-none transition">
+            <option>State</option>
+          </select>
 
-        <button className="w-full bg-blue-600 text-white p-2 rounded">
-          Check Quality
-        </button>
+          <select className="w-full mb-3 p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 outline-none transition">
+            <option>District</option>
+          </select>
+
+          <select className="w-full mb-4 p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 outline-none transition">
+            <option>Usage</option>
+          </select>
+
+          {/* Button */}
+          <button
+            onClick={() => showDisplay(true)}
+            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-medium tracking-wide shadow-md hover:scale-[1.02] hover:shadow-lg transition duration-200"
+          >
+            Check Quality
+          </button>
+        </div>
+
+        {/* Result Card */}
+        {display && (
+          <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg p-6 animate-fade-in">
+            <ResultCard />
+          </div>
+        )}
+
       </div>
 
     </div>

@@ -6,6 +6,7 @@ import Home from "./pages/home";
 import WaterQuality from "./pages/waterQuality";
 import Login from "./pages/login";
 import river from "./assets/river.png";
+import ResultCard from "./components/ResultCard";
 
 function App() {
   const [isOpen, setIsOpen] = useState(true);
