@@ -36,6 +36,7 @@ const ngosData = [
     ],
     credibilityLabel: "Why They're Credible",
     images: [efi1, efi2],
+    website: "https://indiaenvironment.org",
   },
   {
     id: 2,
@@ -64,6 +65,7 @@ const ngosData = [
     ],
     credibilityLabel: "Why They're Credible",
     images: [tbs1, tbs2],
+    website: "https://tarunbharatsangh.in/",
   },
   {
     id: 3,
@@ -89,6 +91,7 @@ const ngosData = [
     ],
     credibilityLabel: "Reality Check",
     images: [iwf1, iwf2],
+    website: "https://www.indiawaterfoundation.org/",
   },
   {
     id: 4,
@@ -115,6 +118,7 @@ const ngosData = [
     ],
     credibilityLabel: "Reality Check",
     images: [wateraid1, wateraid2],
+    website: "https://www.wateraid.org/in/",
   },
 ];
 
@@ -187,6 +191,15 @@ function NgoCard({ ngo }) {
             ))}
           </ul>
         </div>
+
+        <a
+          href={ngo.website}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block w-full mt-4 py-3 rounded-lg bg-gradient-to-r from-sky-500 to-blue-600 text-white font-semibold text-sm text-center no-underline hover:from-sky-400 hover:to-blue-500 hover:shadow-[0_0_18px_rgba(56,189,248,0.5)] transition-all duration-300"
+        >
+          🤝 Join Us
+        </a>
       </div>
     </div>
   );

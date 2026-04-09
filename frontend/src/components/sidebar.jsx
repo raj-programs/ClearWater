@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaHome, FaWater, FaHistory } from "react-icons/fa";
+import { FaHome, FaWater, FaHistory, FaSignOutAlt } from "react-icons/fa";
 import { RiUserCommunityFill } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
 import "./Sidebar.css";
@@ -7,10 +7,10 @@ import "./Sidebar.css";
 function Sidebar({ isOpen }) {
   return (
     <div className={`sidebar ${isOpen ? "sidebar-open" : "sidebar-close"}`}>
-      
+
       <nav className="sidebar-nav">
 
-        <Link to="/" className="sidebar-item">
+        <Link to="/home" className="sidebar-item">
           <FaHome />
           {isOpen && <span>Home</span>}
         </Link>
@@ -29,10 +29,15 @@ function Sidebar({ isOpen }) {
           {isOpen && <span>NGOs</span>}
         </Link>
 
-        <div className="sidebar-item">
+        <Link to="/profile" className="sidebar-item">
           <CgProfile />
           {isOpen && <span>Profile</span>}
-        </div>
+        </Link>
+
+        <Link to="/" className="sidebar-item sidebar-logout">
+          <FaSignOutAlt />
+          {isOpen && <span>Logout</span>}
+        </Link>
 
       </nav>
 

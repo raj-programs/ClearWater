@@ -1,0 +1,136 @@
+.register-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-form {
+  width: 520px;
+  padding: 40px 45px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.register-form:hover {
+  transform: translateY(-4px);
+}
+
+.register-title {
+  text-align: center;
+  margin: 0 0 4px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+}
+
+.register-subtitle {
+  text-align: center;
+  margin: 0 0 24px 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.register-error {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.register-row {
+  display: flex;
+  gap: 12px;
+}
+
+.register-row .register-input {
+  flex: 1;
+}
+
+.register-input {
+  width: 100%;
+  padding: 13px 14px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-size: 14px;
+  transition: 0.3s;
+  box-sizing: border-box;
+}
+
+.register-input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.register-input:focus {
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+/* Date input styling */
+.register-input[type="date"] {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.register-input[type="date"]:valid {
+  color: white;
+}
+
+.register-input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+.register-button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(90deg, #38bdf8, #2563eb);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 15px;
+  margin-top: 4px;
+  transition: 0.3s;
+}
+
+.register-button:hover:not(:disabled) {
+  transform: scale(1.02);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.6);
+}
+
+.register-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.register-footer {
+  text-align: center;
+  margin: 18px 0 0 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.register-link {
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}

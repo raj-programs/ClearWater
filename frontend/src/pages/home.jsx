@@ -1,11 +1,12 @@
 import "./Home.css";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
     <div className="home-container">
-      
+
       <div className="home-card">
-        
+
         <h1 className="home-title">
           Know Your River Water Condition
         </h1>
@@ -15,7 +16,9 @@ function Home() {
         </p>
 
         <button className="home-button">
-          Check Water Quality
+          <Link to="/check">
+            Water Quality
+          </Link>
         </button>
 
         <div className="home-features">

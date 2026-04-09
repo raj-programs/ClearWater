@@ -6,6 +6,8 @@ import Home from "./pages/home";
 import WaterQuality from "./pages/waterQuality";
 import Login from "./pages/login";
 import Ngos from "./pages/ngos";
+import Profile from "./pages/profile";
+import Register from "./pages/register";
 import river from "./assets/river.png";
 import ResultCard from "./components/ResultCard";
 
@@ -13,7 +15,7 @@ function App() {
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
 
-  const isLoginPage = location.pathname === "/";
+  const isLoginPage = location.pathname === "/" || location.pathname === "/register";
 
   return (
     <div
@@ -27,26 +29,28 @@ function App() {
 
       {/* 🔥 Show Navbar ONLY if NOT login */}
       {!isLoginPage && (
-        <div className="h-16 flex items-center px-4 bg-white/20 backdrop-blur-md shadow">
+        <div className="h-30 flex items-center px-4 bg-white/20 backdrop-blur-md shadow">
           <FaBars
-            className="text-xl cursor-pointer text-white"
+            className="h-12 text-xl cursor-pointer text-white"
             onClick={() => setIsOpen(!isOpen)}
           />
         </div>
       )}
 
       <div className="flex flex-1">
-        
-        
+
+
         {!isLoginPage && <Sidebar isOpen={isOpen} />}
 
         <div className="flex-1 p-6">
           <Routes>
-            
+
             <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/home" element={<Home />} />
             <Route path="/check" element={<WaterQuality />} />
             <Route path="/ngos" element={<Ngos />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
 
