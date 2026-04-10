@@ -1,17 +1,18 @@
 import express from "express"
 import dotenv from "dotenv"
 import cors from "cors"
-import geocodeRoute from "./src/controller/geocode.controller.js"
-import registerRoute from "./src/controller/register.controller.js"
+import geocodeRoute from "./src/routes/geocode.router.js"
+import stateRoute from "./src/routes/stateRoute.js"
+import districtRoute from "./src/routes/districtFetch.router.js"
 
 dotenv.config()
 const app = express()
 
 app.use(cors())
-app.use(express.json())
+app.use(express.json());
 app.use("/geocode", geocodeRoute)
-app.use("/api/register", registerRoute)
-
+app.use("/api", stateRoute)
+app.use("/api", districtRoute)
 app.get("/", (req, res) => {
     res.send("Server Running...")
 })

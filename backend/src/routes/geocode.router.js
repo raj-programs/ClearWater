@@ -1,8 +1,8 @@
 import express from "express"
-import { geocode } from "../controller/geocode.controller"
+import getGeocode from "../controller/geocode.controller.js"
 
 const router = express.Router()
 
-router.get("/api", geocode)
+router.get("/", getGeocode)
 
 export default router;

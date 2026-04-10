@@ -1,17 +1,10 @@
 import { useState } from "react";
 import MapView from "../components/mapview";
 import ResultCard from "../components/ResultCard";
-import { useEffect } from "react";
+import Statedropdown from "../components/stateDropdown";
 
 function WaterQuality() {
   const [display, showDisplay] = useState(false);
-
-  useEffect(() => {
-    fetch("http://localhost:5001/geocode?place=Maharashtra")
-      .then(res => res.json())
-      .then(data => console.log(data))
-      .catch(err => console.log(err))
-  }, [])
 
   return (
     <div className="flex gap-6 h-screen p-6 bg-gradient-to-br from-blue-50 via-white to-blue-100">
@@ -32,13 +25,7 @@ function WaterQuality() {
           </h2>
 
           {/* Dropdowns */}
-          <select className="w-full mb-3 p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 outline-none transition">
-            <option>State</option>
-          </select>
-
-          <select className="w-full mb-3 p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 outline-none transition">
-            <option>District</option>
-          </select>
+          <Statedropdown />
 
           <select className="w-full mb-4 p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 outline-none transition">
             <option>Usage</option>
