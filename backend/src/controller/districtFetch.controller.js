@@ -5,7 +5,7 @@ const districtFetch = async (req, res) => {
     const { data, error } = await supabase
     .from("State")
     .select("District")
-    .eq('"State Name"', `%${state.trim()}%`)
+    .ilike('"State Name"', `%${state.trim()}%`)
 
     if(error){
         return res.status(500).json({error})

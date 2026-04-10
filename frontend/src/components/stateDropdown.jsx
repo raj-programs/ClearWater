@@ -41,7 +41,7 @@ function Statedropdown() {
                 {
                     district.map((item, index) => (
                         <option key={index} value={item}>
-                            {JSON.stringify(item["State Name"])}
+                            {item["District"]}
                         </option>
                     ))
                 }
