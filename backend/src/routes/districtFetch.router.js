@@ -1,8 +1,8 @@
 import districtFetch from "../controller/districtFetch.controller.js";
 import express from "express";
 
-const router = express.Router();
+const districtRoute = express.Router();
 
-router.get("/districts/:state", districtFetch)
+districtRoute.get("/districts/:state", districtFetch)
 
-export default router;
+export default districtRoute;

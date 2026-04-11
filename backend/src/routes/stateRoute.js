@@ -1,7 +1,7 @@
 import express from "express"
 import stateFetch from "../controller/stateFetch.controller.js";
-const router = express.Router();
+const stateRoute = express.Router();
 
-router.get("/states", stateFetch)
+stateRoute.get("/states", stateFetch)
 
-export default router;
+export default stateRoute;

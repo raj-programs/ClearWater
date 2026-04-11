@@ -1,7 +1,7 @@
 import { useState } from "react";
 import MapView from "../components/mapview";
 import ResultCard from "../components/ResultCard";
-import Statedropdown from "../components/stateDropdown";
+import Statedropdown from "../components/dropdown";
 
 function WaterQuality() {
   const [display, showDisplay] = useState(false);
