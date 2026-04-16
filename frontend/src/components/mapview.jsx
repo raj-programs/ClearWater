@@ -36,7 +36,7 @@ function MapView({ state, district, river }) {
     <MapContainer
       key={`${state}-${district}-${river}`}
       center={[19.0760, 72.8777]}
-      zoom={2}
+      zoom={5}
       style={{ height: "1000px", width: "1000px" }}
     >
       <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />

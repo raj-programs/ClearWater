@@ -8,7 +8,7 @@ const monitoringLocation = async (req, res) => {
     const { data, error } = await supabase
     .from("water_quality_data")
     .select('"Monitoring Location", lattitude, longitude')
-    .ilike('"State Name"', state)
+    .ilike('"State Name"', `%${state.trim()}%`)
     .ilike("District", districts)
 
     if(error){
