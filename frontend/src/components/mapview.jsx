@@ -18,21 +18,25 @@ function MapView({ state, district, river }) {
   useEffect(() => {
     if (!state || !district) return;
 
-    let url = `/api/rivers?state=${state}&districts=${district}`; // ✅ FIXED
-    if (river) url += `&river=${river}`; // ✅ FIXED
+    let url = `/api/rivers?state=${state}&districts=${district}`;
+    if (river) url += `&river=${river}`;
 
     fetch(url)
       .then(res => res.json())
-      .then(setData)
+      .then(res =>
+        {
+          setData(res),
+          console.log("Api Call", res);
+        })
       .catch(console.error);
 
   }, [state, district, river]);
 
   return (
     <MapContainer
-      key={`${state}-${district}-${river}`}   // ✅ FORCE REFRESH
+      key={`${state}-${district}-${river}`}
       center={[19.0760, 72.8777]}
-      zoom={5}
+      zoom={2}
       style={{ height: "1000px", width: "1000px" }}
     >
       <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -40,7 +44,7 @@ function MapView({ state, district, river }) {
       <AutoZoom data={data} />
 
       {data.map((item, i) => {
-        if (!item.lattitude || !item.longitude) return null; // ✅ SAFETY
+        if (!item.lattitude || !item.longitude) return null;
 
         return (
           <Circle
@@ -56,7 +60,7 @@ function MapView({ state, district, river }) {
             <Popup>
               <strong>{item["Monitoring Location"]}</strong><br />
               {item["District"]}<br />
-              {item["State Name"]} {/* ✅ FIXED */}
+              {item["State Name"]}
             </Popup>
           </Circle>
         );

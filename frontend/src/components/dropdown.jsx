@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
-function Dropdown() {
+function Dropdown({ setState, setDistrict, setRiver }) {
+
     const [states, showStates] = useState([]);
     const [state, selectState] = useState("");
 
@@ -8,10 +9,10 @@ function Dropdown() {
     const [districts, selectDistricts] = useState("");
 
     const [rivers, showRivers] = useState([]);
-    const [river, selectRiver] = useState("");
 
     const handleStateChange = (value) => {
         selectState(value);
+        setState(value);              //send to parent
         showdistrict([]);
         selectDistricts("");
         showRivers([]);
@@ -19,19 +20,18 @@ function Dropdown() {
 
     const handleDistrictChange = (value) => {
         selectDistricts(value);
+        setDistrict(value);           //send to parent
         showRivers([]);
     };
 
     const handleRiverChange = (value) => {
-        selectRiver(value);
+        setRiver(value);              //send to parent
     };
 
     useEffect(() => {
         fetch("/api/states")
             .then(res => res.json())
-            .then(data => {
-                showStates(data);
-            });
+            .then(showStates);
     }, []);
 
     useEffect(() => {
@@ -39,9 +39,7 @@ function Dropdown() {
 
         fetch(`/api/districts/${encodeURIComponent(state)}`)
             .then(res => res.json())
-            .then(data => {
-                showdistrict(data);
-            });
+            .then(showdistrict);
     }, [state]);
 
     useEffect(() => {
@@ -49,49 +47,31 @@ function Dropdown() {
 
         fetch(`/api/rivers?state=${encodeURIComponent(state)}&districts=${encodeURIComponent(districts)}`)
             .then(res => res.json())
-            .then(data => {
-                showRivers(data);
-            });
+            .then(showRivers);
     }, [state, districts]);
 
     return (
         <>
-            <select
-                onChange={(e) => handleStateChange(e.target.value)}
-                value={state}
-                className="w-full mb-3 p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 outline-none transition text-black"
-            >
+            <select onChange={(e) => handleStateChange(e.target.value)} value={state}>
                 <option value="">Select State</option>
-                {states.map((item, index) => (
-                    <option key={index} value={item}>
-                        {item}
-                    </option>
+                {states.map((item, i) => (
+                    <option key={i} value={item}>{item}</option>
                 ))}
             </select>
 
-            <select
-                onChange={(e) => handleDistrictChange(e.target.value)}
-                value={districts}
-                className="w-full mb-3 p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 outline-none transition text-black"
-            >
+            <select onChange={(e) => handleDistrictChange(e.target.value)} value={districts}>
                 <option value="">Select District</option>
-                {district.map((item, index) => (
-                    <option key={index} value={item["District"]}>
+                {district.map((item, i) => (
+                    <option key={i} value={item["District"]}>
                         {item["District"]}
                     </option>
                 ))}
             </select>
 
-            <select
-                className="w-full mb-3 p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-400 outline-none transition text-black"
-                onChange={(e) => handleRiverChange(e.target.value)}
-            >
+            <select onChange={(e) => handleRiverChange(e.target.value)}>
                 <option value="">Select Monitoring Location</option>
-                {rivers.map((item, index) => (
-                    <option
-                        key={item["Monitoring Location"] + index}
-                        value={item["Monitoring Location"]}
-                    >
+                {rivers.map((item, i) => (
+                    <option key={i} value={item["Monitoring Location"]}>
                         {item["Monitoring Location"]}
                     </option>
                 ))}

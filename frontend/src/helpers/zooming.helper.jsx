@@ -14,6 +14,9 @@ function AutoZoom({ data }) {
       Number(d.longitude)
     ]);
 
+    console.log(points);
+    
+
   if (points.length === 0) return;
 
   setTimeout(() => {
@@ -28,9 +31,11 @@ function AutoZoom({ data }) {
       });
     }
   }, 100);
-
+  
 // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [data]); 
+}, [data]);
+
+console.log("Effect Triggered");
 
   return null;
 }
