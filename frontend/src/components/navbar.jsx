@@ -1,8 +1,12 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./Navbar.css";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const navLinks = ["Home", "About Us", "What We Do", "Help Center", "Contact"];
 
   return (
@@ -24,7 +28,9 @@ const Navbar = () => {
           ))}
         </ul>
 
-        <button className="auth-btn">Login / Sign Up</button>
+        <button className="auth-btn" onClick={() => navigate(user ? "/home" : "/login")}>
+          {user ? "Dashboard" : "Login / Sign Up"}
+        </button>
       </div>
     </motion.nav>
   );

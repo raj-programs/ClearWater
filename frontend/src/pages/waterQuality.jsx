@@ -4,19 +4,53 @@ import ResultCard from "../components/ResultCard";
 import Dropdown from "../components/dropdown";
 
 function WaterQuality() {
-  const [display, showDisplay] = useState(false);
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [usage, setUsage] = useState("");
 
   const [state, setState] = useState("");
   const [district, setDistrict] = useState("");
   const [river, setRiver] = useState("");
 
+  const handleCheckQuality = async () => {
+    if (!state || !district || !river) {
+      setError("Please select a state, district, and monitoring location.");
+      return;
+    }
+    if (!usage) {
+      setError("Please select a usage type.");
+      return;
+    }
+
+    setError("");
+    setResult(null);
+    setLoading(true);
+
+    try {
+      const params = new URLSearchParams({ state, district, river, usage });
+      const res = await fetch(`/api/quality?${params}`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Failed to fetch water quality data.");
+        return;
+      }
+
+      setResult(data);
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex gap-6 h-screen p-6 bg-gradient-to-br from-blue-50 via-white to-blue-100">
 
       {/* Map Area */}
       <div className="flex-1 h-full rounded-2xl overflow-hidden shadow-xl border border-gray-200">
-        <MapView 
+        <MapView
           state={state}
           district={district}
           river={river}
@@ -24,7 +58,7 @@ function WaterQuality() {
       </div>
 
       {/* Right Panel */}
-      <div className="flex flex-col gap-4 w-96">
+      <div className="flex flex-col gap-4 w-96 overflow-y-auto">
 
         <div className="backdrop-blur-xl bg-white/70 border border-white/40 rounded-2xl shadow-lg p-6">
 
@@ -32,8 +66,7 @@ function WaterQuality() {
             Check Water Quality
           </h2>
 
-          {/* PASS SETTERS */}
-          <Dropdown 
+          <Dropdown
             setState={setState}
             setDistrict={setDistrict}
             setRiver={setRiver}
@@ -45,24 +78,35 @@ function WaterQuality() {
             className="w-full mb-4 p-3 rounded-lg border border-gray-300"
           >
             <option value="">Usage</option>
-            <option value="A">Drinking Water</option>
+            <option value="A">Drinking Water (without treatment)</option>
             <option value="B">Outdoor Bathing</option>
-            <option value="C">After Treatment</option>
-            <option value="D">Wildlife</option>
-            <option value="E">Irrigation</option>
+            <option value="C">Drinking Water (after treatment)</option>
+            <option value="D">Wildlife & Fisheries</option>
+            <option value="E">Irrigation / Industrial / Waste Disposal</option>
           </select>
 
           <button
-            onClick={() => showDisplay(true)}
-            className="w-full bg-blue-600 text-white py-3 rounded-lg"
+            onClick={handleCheckQuality}
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-3 rounded-lg disabled:opacity-50"
           >
-            Check Quality
+            {loading ? "Checking..." : "Check Quality"}
           </button>
+
+          {error && (
+            <p className="mt-3 text-sm text-red-600">{error}</p>
+          )}
         </div>
 
-        {display && (
+        {loading && (
+          <div className="bg-white p-6 rounded-2xl shadow-lg text-center text-gray-500">
+            Loading water quality data...
+          </div>
+        )}
+
+        {result && (
           <div className="bg-white p-6 rounded-2xl shadow-lg">
-            <ResultCard />
+            <ResultCard result={result} />
           </div>
         )}
 

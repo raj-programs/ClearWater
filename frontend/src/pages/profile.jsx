@@ -1,58 +1,117 @@
+import { useState, useEffect } from "react";
+import { FaMapMarkerAlt, FaEnvelope, FaPhone, FaCalendarAlt, FaEdit, FaSave, FaTimes } from "react-icons/fa";
+import { useAuth } from "../context/AuthContext";
+import { supabase } from "../supabaseClient";
 import "./profile.css";
-import { FaMapMarkerAlt, FaEnvelope, FaPhone, FaCalendarAlt, FaWater, FaCheckCircle, FaStar } from "react-icons/fa";
 
 function Profile() {
-  const user = {
-    name: "Satyajeet Ravan",
-    role: "Water Quality Analyst",
-    location: "Mumbai, Maharashtra",
-    email: "satyajeet.ravan@clearwater.org",
-    phone: "+91 98765 43210",
-    joined: "April 2026",
-    bio: "Passionate about protecting India's water resources. Working with ClearWater to monitor river health and promote sustainable water practices across Maharashtra.",
-    stats: [
-      { label: "Reports Filed", value: "127" },
-      { label: "Rivers Monitored", value: "14" },
-      { label: "Districts Covered", value: "8" },
-      { label: "Alerts Raised", value: "23" },
-    ],
-    badges: [
-      { icon: "🌊", title: "Water Guardian", desc: "100+ reports submitted" },
-      { icon: "🔬", title: "Quality Expert", desc: "Advanced analysis certified" },
-      { icon: "🌿", title: "Eco Warrior", desc: "Community cleanup leader" },
-    ],
-    recentActivity: [
-      { date: "Apr 8, 2026", action: "Submitted water quality report for Mithi River" },
-      { date: "Apr 5, 2026", action: "Flagged high turbidity levels in Ulhas River" },
-      { date: "Apr 2, 2026", action: "Verified safe drinking water zone in Thane district" },
-      { date: "Mar 28, 2026", action: "Joined cleanup drive with EFI at Powai Lake" },
-    ],
+  const { user } = useAuth();
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const [editForm, setEditForm] = useState({ full_name: "", phone_no: "", address: "" });
+
+  useEffect(() => {
+    if (!user) return;
+
+    async function fetchProfile() {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (!error && data) {
+        setProfile(data);
+        setEditForm({
+          full_name: data.full_name || "",
+          phone_no: data.phone_no || "",
+          address: data.address || "",
+        });
+      }
+      setLoading(false);
+    }
+
+    fetchProfile();
+  }, [user]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    setMessage("");
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        full_name: editForm.full_name,
+        phone_no: editForm.phone_no,
+        address: editForm.address,
+        updated_at: new Date(),
+      })
+      .eq("id", user.id);
+
+    if (error) {
+      setMessage("Failed to update profile: " + error.message);
+    } else {
+      setProfile({ ...profile, ...editForm });
+      setEditing(false);
+      setMessage("Profile updated successfully!");
+    }
+    setSaving(false);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="flex items-center justify-center h-full text-white text-lg">
+        Profile not found.
+      </div>
+    );
+  }
+
+  const memberSince = profile.created_at
+    ? new Date(profile.created_at).toLocaleDateString("en-IN", { month: "long", year: "numeric" })
+    : "N/A";
 
   return (
     <div className="profile-container">
-
       {/* Header Card */}
       <div className="profile-header-card">
         <div className="profile-avatar">
-          <span>{user.name.charAt(0)}</span>
+          <span>{(profile.full_name || "U").charAt(0)}</span>
         </div>
         <div className="profile-header-info">
-          <h1 className="profile-name">{user.name}</h1>
-          <p className="profile-role">{user.role}</p>
+          <h1 className="profile-name">{profile.full_name}</h1>
           <div className="profile-meta-row">
-            <span><FaMapMarkerAlt /> {user.location}</span>
-            <span><FaCalendarAlt /> Joined {user.joined}</span>
+            <span><FaMapMarkerAlt /> {profile.address || "No address"}</span>
+            <span><FaCalendarAlt /> Joined {memberSince}</span>
           </div>
         </div>
+        <button
+          className="ml-auto px-4 py-2 rounded-lg text-sm font-medium bg-white/10 hover:bg-white/20 text-white transition-colors"
+          onClick={() => { setEditing(!editing); setMessage(""); }}
+        >
+          {editing ? <><FaTimes className="inline mr-1" />Cancel</> : <><FaEdit className="inline mr-1" />Edit Profile</>}
+        </button>
       </div>
 
-      {/* Content Grid */}
+      {message && (
+        <div className={`mt-4 p-3 rounded-lg text-sm text-center ${message.includes("Failed") ? "bg-red-500/20 text-red-300" : "bg-green-500/20 text-green-300"}`}>
+          {message}
+        </div>
+      )}
+
+      {/* Content */}
       <div className="profile-grid">
-
-        {/* Left Column */}
         <div className="profile-left">
-
           {/* Contact Info */}
           <div className="profile-card">
             <h2>Contact Information</h2>
@@ -61,80 +120,86 @@ function Profile() {
                 <FaEnvelope className="profile-contact-icon" />
                 <div>
                   <p className="profile-contact-label">Email</p>
-                  <p className="profile-contact-value">{user.email}</p>
+                  <p className="profile-contact-value">{profile.email}</p>
                 </div>
               </div>
               <div className="profile-contact-item">
                 <FaPhone className="profile-contact-icon" />
                 <div>
-                  <p className="profile-contact-label">Phone no.</p>
-                  <p className="profile-contact-value">{user.phone}</p>
+                  <p className="profile-contact-label">Phone</p>
+                  {editing ? (
+                    <input
+                      type="tel"
+                      className="bg-white/10 border border-white/20 rounded px-2 py-1 text-white text-sm w-full"
+                      value={editForm.phone_no}
+                      onChange={(e) => setEditForm({ ...editForm, phone_no: e.target.value })}
+                    />
+                  ) : (
+                    <p className="profile-contact-value">{profile.phone_no || "Not set"}</p>
+                  )}
                 </div>
               </div>
               <div className="profile-contact-item">
                 <FaMapMarkerAlt className="profile-contact-icon" />
                 <div>
-                  <p className="profile-contact-label">Location</p>
-                  <p className="profile-contact-value">{user.location}</p>
+                  <p className="profile-contact-label">Address</p>
+                  {editing ? (
+                    <input
+                      type="text"
+                      className="bg-white/10 border border-white/20 rounded px-2 py-1 text-white text-sm w-full"
+                      value={editForm.address}
+                      onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
+                    />
+                  ) : (
+                    <p className="profile-contact-value">{profile.address || "Not set"}</p>
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Bio */}
+          {/* Personal Info */}
           <div className="profile-card">
-            <h2>About</h2>
-            <p className="profile-bio">{user.bio}</p>
-          </div>
-
-          {/* Badges */}
-          <div className="profile-card">
-            <h2><FaStar style={{ marginRight: 8 }} />Badges Earned</h2>
-            <div className="profile-badges">
-              {user.badges.map((badge, i) => (
-                <div key={i} className="profile-badge">
-                  <span className="profile-badge-icon">{badge.icon}</span>
-                  <div>
-                    <p className="profile-badge-title">{badge.title}</p>
-                    <p className="profile-badge-desc">{badge.desc}</p>
-                  </div>
+            <h2>Personal Information</h2>
+            <div className="profile-contact-list">
+              <div className="profile-contact-item">
+                <div>
+                  <p className="profile-contact-label">Full Name</p>
+                  {editing ? (
+                    <input
+                      type="text"
+                      className="bg-white/10 border border-white/20 rounded px-2 py-1 text-white text-sm w-full"
+                      value={editForm.full_name}
+                      onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
+                    />
+                  ) : (
+                    <p className="profile-contact-value">{profile.full_name}</p>
+                  )}
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column */}
-        <div className="profile-right">
-
-          {/* Stats */}
-          <div className="profile-card">
-            <h2><FaWater style={{ marginRight: 8 }} />Statistics</h2>
-            <div className="profile-stats">
-              {user.stats.map((stat, i) => (
-                <div key={i} className="profile-stat">
-                  <p className="profile-stat-value">{stat.value}</p>
-                  <p className="profile-stat-label">{stat.label}</p>
+              </div>
+              <div className="profile-contact-item">
+                <FaCalendarAlt className="profile-contact-icon" />
+                <div>
+                  <p className="profile-contact-label">Date of Birth</p>
+                  <p className="profile-contact-value">
+                    {profile.dob
+                      ? new Date(profile.dob).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })
+                      : "Not set"}
+                  </p>
                 </div>
-              ))}
+              </div>
             </div>
           </div>
 
-          {/* Recent Activity */}
-          <div className="profile-card">
-            <h2><FaCheckCircle style={{ marginRight: 8 }} />Recent Activity</h2>
-            <div className="profile-activity-list">
-              {user.recentActivity.map((item, i) => (
-                <div key={i} className="profile-activity-item">
-                  <div className="profile-activity-dot" />
-                  <div>
-                    <p className="profile-activity-action">{item.action}</p>
-                    <p className="profile-activity-date">{item.date}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          {editing && (
+            <button
+              className="w-full mt-2 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors disabled:opacity-50"
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving ? "Saving..." : <><FaSave className="inline mr-2" />Save Changes</>}
+            </button>
+          )}
         </div>
       </div>
     </div>

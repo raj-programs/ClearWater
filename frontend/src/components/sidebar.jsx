@@ -2,9 +2,12 @@ import { Link } from "react-router-dom";
 import { FaHome, FaWater, FaHistory, FaSignOutAlt } from "react-icons/fa";
 import { RiUserCommunityFill } from "react-icons/ri";
 import { CgProfile } from "react-icons/cg";
+import { useAuth } from "../context/AuthContext";
 import "./Sidebar.css";
 
 function Sidebar({ isOpen }) {
+  const { signOut } = useAuth();
+
   return (
     <div className={`sidebar ${isOpen ? "sidebar-open" : "sidebar-close"}`}>
 
@@ -34,10 +37,13 @@ function Sidebar({ isOpen }) {
           {isOpen && <span>Profile</span>}
         </Link>
 
-        <Link to="/" className="sidebar-item sidebar-logout">
+        <button
+          onClick={signOut}
+          className="sidebar-item sidebar-logout w-full text-left border-none bg-transparent cursor-pointer"
+        >
           <FaSignOutAlt />
           {isOpen && <span>Logout</span>}
-        </Link>
+        </button>
 
       </nav>
 

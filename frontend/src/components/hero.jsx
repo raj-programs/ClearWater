@@ -1,13 +1,15 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./Hero.css";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
-    <section id="home" className="hero">    
+    <section id="home" className="hero">
       <div className="hero-overlay"></div>
 
       <motion.div
@@ -24,15 +26,13 @@ const Hero = () => {
         </p>
 
         <div className="hero-buttons">
-          {/* Go to Login */}
           <button
             className="btn-primary"
-            onClick={() => navigate("/login")}
+            onClick={() => navigate(user ? "/home" : "/login")}
           >
             Explore Water Quality
           </button>
 
-          {/* Scroll to About section */}
           <button
             className="btn-secondary"
             onClick={() => {
@@ -50,7 +50,7 @@ const Hero = () => {
         animate={{ y: [0, 10, 0] }}
         transition={{ repeat: Infinity, duration: 2 }}
       >
-        
+
       </motion.div>
     </section>
   );

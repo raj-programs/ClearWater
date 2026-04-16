@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 import "./register.css";
 
 function Register() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    userId: "",
     fullName: "",
     email: "",
     phone: "",
@@ -27,8 +27,7 @@ function Register() {
     e.preventDefault();
     setError("");
 
-    // Basic validation
-    if (!form.userId || !form.fullName || !form.email || !form.phone || !form.address || !form.dob || !form.password) {
+    if (!form.fullName || !form.email || !form.phone || !form.address || !form.dob || !form.password) {
       setError("All fields are required");
       return;
     }
@@ -45,34 +44,38 @@ function Register() {
 
     setLoading(true);
 
-    try {
-      const response = await fetch("http://localhost:5001/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: form.userId,
-          full_name: form.fullName,
-          email: form.email,
-          phone: form.phone,
-          address: form.address,
-          dob: form.dob,
-          password: form.password,
-        }),
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email: form.email,
+      password: form.password,
+    });
+
+    if (signUpError) {
+      setError(signUpError.message);
+      setLoading(false);
+      return;
+    }
+
+    // Only insert profile if we got a session (email confirmation disabled)
+    if (data.session) {
+      const { error: profileError } = await supabase.from("profiles").insert({
+        id: data.user.id,
+        full_name: form.fullName,
+        email: form.email,
+        phone_no: form.phone,
+        address: form.address,
+        dob: form.dob,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Registration failed");
+      if (profileError) {
+        setError(profileError.message);
         setLoading(false);
         return;
       }
 
-      // Success — go to login
-      navigate("/");
-    } catch (err) {
-      setError("Server unavailable. Please try again later.");
-      setLoading(false);
+      navigate("/login", { state: { message: "Registration successful! Please log in." } });
+    } else {
+      // Email confirmation required — profile will be created after confirmation
+      navigate("/login", { state: { message: "Please check your email to confirm your account, then log in." } });
     }
   };
 
@@ -84,24 +87,14 @@ function Register() {
 
         {error && <div className="register-error">{error}</div>}
 
-        <div className="register-row">
-          <input
-            type="text"
-            name="userId"
-            placeholder="User ID"
-            className="register-input"
-            value={form.userId}
-            onChange={handleChange}
-          />
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            className="register-input"
-            value={form.fullName}
-            onChange={handleChange}
-          />
-        </div>
+        <input
+          type="text"
+          name="fullName"
+          placeholder="Full Name"
+          className="register-input"
+          value={form.fullName}
+          onChange={handleChange}
+        />
 
         <input
           type="email"
@@ -164,7 +157,7 @@ function Register() {
         </button>
 
         <p className="register-footer">
-          Already have an account? <Link to="/" className="register-link">Login here</Link>
+          Already have an account? <Link to="/login" className="register-link">Login here</Link>
         </p>
       </form>
     </div>
